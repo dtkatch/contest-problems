@@ -122,9 +122,9 @@ template<typename T> ostream& operator<<(ostream &s,vector<T> t){F(i,0,SZ(t))s<<
 #define INDEX(arr,ind)               (lower_bound(all(arr),ind)-arr.begin())
 
 // dtkatch
-#define ffz(i,n) for(ui i=0;i<=(n);i++)
-#define ffo(i,n) for(ui i=1;i<=(n);i++)
-#define ffi(i,a,b) for(ui i=(a);i<=(b);i++)
+#define ffz(i,n) for(int i=0;i<=(n);i++)
+#define ffo(i,n) for(int i=1;i<=(n);i++)
+#define ffi(i,a,b) for(int i=(a);i<=(b);i++)
 #define max(a,b) (a<b?b:a)
 #define min(a,b) (a>b?b:a)
 #define dd double
@@ -136,103 +136,43 @@ int comp(const void *a, const void *b){ return *(int*)a - *(int*)b; }
 
 // problem solution
 
-string m[1000];
-int r[10];
-string mitos(int n){
-    stringstream ss;
-    string s;
-    ss << n;
-    ss >> s;
-    if(s.length()<3) s+="0";
-    if(s.length()<3) s+="0";
-    return s;
-}
-
 int main(){
-    int n;
-    cin>>n;
-    string s;
-    getline(cin,s);
-    getline(cin,s);
-    ffo(i,n){
-        //printf("case %d\n",i);
-        ffz(j,999){
-            //printf("j=%d\n",j);
-            getline(cin,s);
-            if(s==""){
-                ffi(k,j,999){
-                    //printf("k=%d\n",k);
-                    m[k]="000";
-                }
-                //ffz(k,j){
-                //    cout << m[k] << endl;
-                //}
-                int p=0;
-                int c=0;
-                while(1){
 
-                    //cout << "-----------------" << endl;
-                    //cout << "p=" << p << endl;
-                    //cout << "m[p]=" << m[p] << endl;
-                    //cout << "-----------------" << endl;
-                    //ffz(k,20){
-                    //    cout << m[k] << endl;
-                    //}
-                    //ffz(k,9){
-                    //    cout << r[k] << " ";
-                    //}
-                    //cout << endl;
+    string s; getline(cin,s);
+    stringstream ss; ss<<s;
+    int c; ss>>c;
+    getline(cin,s);
 
-                    if(c>20) goto halt; // debug
-                    c++;
-                    switch(m[p][0]){
-                        case '1':
-                            ppf(c);
-                            goto halt;
-                            break;
-                        case '2':
-                            r[m[p][1]-'0']=m[p][2]-'0';
-                            break;
-                        case '3':
-                            r[m[p][1]-'0']+=m[p][2]-'0';
-                            r[m[p][1]-'0']%=1000;
-                            break;
-                        case '4':
-                            r[m[p][1]-'0']*=m[p][2]-'0';
-                            r[m[p][1]-'0']%=1000;
-                            break;
-                        case '5':
-                            r[m[p][1]-'0']=r[m[p][2]-'0'];
-                            r[m[p][1]-'0']%=1000;
-                            break;
-                        case '6':
-                            r[m[p][1]-'0']+=r[m[p][2]-'0'];
-                            r[m[p][1]-'0']%=1000;
-                            break;
-                        case '7':
-                            r[m[p][1]-'0']*=r[m[p][2]-'0'];
-                            r[m[p][1]-'0']%=1000;
-                            break;
-                        case '8':
-                            //r[m[p][1]-'0']=stoi(m[r[m[p][2]-'0']]);
-                            r[m[p][1]-'0']=atoi((m[r[m[p][2]-'0']]).c_str());
-                            r[m[p][1]-'0']%=1000;
-                            break;
-                        case '9':
-                            //m[r[m[p][2]-'0']]=to_string(r[m[p][1]-'0']);
-                            //m[r[m[p][2]-'0']]=string(itoa(r[m[p][1]-'0']));
-                            m[r[m[p][2]-'0']]=mitos(r[m[p][1]-'0']);
-                            break;
-                        case '0':
-                            if(r[m[p][2]-'0'])
-                                p=r[m[p][1]-'0']-1;
-                            break;
-                    }
-                    p++;
-                }
-                halt: break;
-            }
-            m[j]=s;
+    ffo(k,c){
+
+        int m[1000]; ffz(i,999) m[i]=0;
+
+        for(int i=0;getline(cin,s)&&s!="";i++){
+            stringstream ss; 
+            ss<<s;
+            ss>>m[i];
         }
+
+        int r[10]; ffz(i,9) r[i]=0;
+
+        int p=0; ffo(i,INF){
+            int d=m[p]/10%10;
+            int n=m[p]%10;
+            switch(m[p]/100){
+                case 1: if(m[p]%100)        break; ppf(i); goto fin;
+                case 2: r[d]= n;            break;
+                case 3: r[d]+=n;            break;
+                case 4: r[d]*=n;            break;
+                case 5: r[d]= r[n];         break;
+                case 6: r[d]+=r[n];         break;
+                case 7: r[d]*=r[n];         break;
+                case 8: r[d]=m[r[n]];       break;    
+                case 9: m[r[n]]=r[d];       break;
+                case 0: if(r[n]) p=r[d]-1;  break;
+            }
+            r[d]%=1000;
+            p++;
+        } 
+        fin: if(k!=c) ppn;
     }
 }

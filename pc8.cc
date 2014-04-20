@@ -136,76 +136,82 @@ int comp(const void *a, const void *b){ return *(int*)a - *(int*)b; }
 
 // problem solution
 
-string s[30];
-int v[1010][30];
-bool e[30];
-int c[30];
-
 int main(){
-    int t;
-    cin>>t;
+
+    string s; getline(cin,s);
+    int t; stringstream ss; ss<<s; ss>>t;
+    getline(cin,s);
+
     ffo(i,t){
-        int n;
-        cin>>n;
-        getline(cin,s[0]);
-        ffo(j,n){
-            //cin>>s[j];
-            getline(cin,s[j]);
-            e[j]=1;
-        }
-        int p;
-        ffo(k,1000){
-            ffo(j,n){
-                if(cin>>v[k][j]);//cout << v[k][j];
-                else{
-                    p=k-1;
-                    goto analyze;
-                }
+
+        getline(cin,s);
+        stringstream ss; ss<<s; 
+        int n; ss>>n;
+
+        string c[21]; 
+        ffo(i,n)
+            getline(cin,c[i]);
+
+        int w=0; 
+        int v[1001][21]; 
+        ffo(i,99999){
+            string s; 
+            if(!getline(cin,s)||s==""){
+                w=i-1;
+                break;
             }
+            stringstream ss; ss<<s;
+            ffo(j,n)
+                ss>>v[i][j];
         }
-        analyze: while(1){
-                //ppn;
-                //ppf(p);
-                //ffo(j,n)
-                //    cout << e[j] << " ";
-                //ppn;
-            // set vote counts to zero
-            ffo(j,n)
-                c[j]=0;
-            // count votes for favorite eligible candidate
-            ffo(k,p){
-                int m = 100;
-                ffo(j,n)
-                    if(e[j]) m = min(m,v[k][j]);
-                c[m]++;
+
+        bool e[21]; 
+        ffo(i,n) 
+            e[i]=true;
+        
+        ffo(i,n){
+
+            // count votes
+
+            int u[21]; 
+            ffo(i,n) 
+                u[i]=0;
+            ffo(i,w)
+                ffo(j,n) 
+                    if(e[v[i][j]]){
+                        u[v[i][j]]++;
+                        break;
+                    }
+
+            // get max and min vote count
+
+            int ma=-12345; ffo(i,n) if(e[i]) ma=max(ma,u[i]);
+            int mi=123456; ffo(i,n) if(e[i]) mi=min(mi,u[i]);
+
+            // check for tie
+
+            if(ma==mi){
+                ffo(i,n)
+                    if(e[i])
+                        cout<<c[i]<<endl;
+                goto fin;
             }
-                //ffo(j,n)
-                //    cout << c[j] << " ";
-                //ppn;
-            // majority winner?
-            ffo(j,n)
-                if(e[j]&&(2*c[j])>p){
-                    cout<<s[j]<<endl;
-                    goto winner;
-                }
-            // no majority winner, determine lowest vote count among eligibles
-            int m=2000;
-            ffo(j,n)
-                if(e[j]) m=min(m,c[j]);
-            ppf(m);
-            // are all candidates tied?
-            bool tied = true;
-            ffo(j,n)
-                if(e[j]&&c[j]>m) tied = false;
-            if(tied){
-                ffo(j,n)
-                    if(e[j]) cout<<s[j]<<endl;
-                goto winner;
-            }
-            // eliminate candidates with lowest vote count
-            ffo(j,n)
-                if(c[j]==m) e[j]=0;
+
+            // check for majority
+
+            if(2*ma>w)
+                ffo(i,n) 
+                    if(u[i]==ma&&e[i]){
+                        cout<<c[i]<<endl;
+                        goto fin;
+                    }
+
+            // eliminate weakest
+
+            ffo(i,n)
+                if(u[i]==mi) e[i]=false;
         }
-        winner: if(i!=t) cout << endl;
+
+        fin: if(i!=t) ppn;
     }
 }
